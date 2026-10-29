@@ -1,191 +1,139 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PIN Code Weather Chat</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PIN Weather Chatbot</title>
 <style>
-  :root {
-    --bg: #f2f5f3;
-    --panel: #ffffff;
-    --ink: #17211d;
-    --muted: #5d6b65;
-    --line: #d9e1dc;
-    --accent: #0f766e;
-    --accent-ink: #ffffff;
-    --bot: #e7efeb;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #101614;
-      --panel: #18211e;
-      --ink: #e8efec;
-      --muted: #9aaba3;
-      --line: #2a3732;
-      --accent: #2fb5a8;
-      --accent-ink: #06201d;
-      --bot: #22302b;
-    }
-  }
-  * { box-sizing: border-box; }
-  html, body { height: 100%; margin: 0; }
-  body {
-    background: var(--bg);
-    color: var(--ink);
-    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    display: flex;
-    justify-content: center;
-  }
-  .app {
-    width: 100%;
-    max-width: 640px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    background: var(--panel);
-    border-left: 1px solid var(--line);
-    border-right: 1px solid var(--line);
-  }
-  header { padding: 16px 20px 12px; border-bottom: 1px solid var(--line); }
-  h1 { margin: 0; font-size: 1.15rem; }
-  header p { margin: 2px 0 0; color: var(--muted); font-size: .9rem; }
-  #log {
-    flex: 1;
-    overflow-y: auto;
-    padding: 16px 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .msg { max-width: 85%; padding: 9px 13px; border-radius: 12px; white-space: pre-wrap; overflow-wrap: anywhere; }
-  .bot { background: var(--bot); align-self: flex-start; }
-  .me { background: var(--accent); color: var(--accent-ink); align-self: flex-end; }
-  .err { background: transparent; border: 1px solid #b3261e; color: #b3261e; align-self: flex-start; }
-  @media (prefers-color-scheme: dark) { .err { color: #ff8a80; border-color: #ff8a80; } }
-  .tokens {
-    padding: 8px 20px;
-    border-top: 1px solid var(--line);
-    font-size: .85rem;
-    color: var(--muted);
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-  .tokens button {
-    background: none; border: 0; padding: 0; color: var(--muted);
-    text-decoration: underline; cursor: pointer; font: inherit;
-  }
-  form { display: flex; gap: 8px; padding: 12px 20px 16px; border-top: 1px solid var(--line); }
-  input[type="text"] {
-    flex: 1; min-width: 0; padding: 10px 12px; font: inherit;
-    border: 1px solid var(--line); border-radius: 10px;
-    background: var(--bg); color: var(--ink);
-  }
-  button.send {
-    padding: 10px 18px; font: inherit; font-weight: 600; border: 0; border-radius: 10px;
-    background: var(--accent); color: var(--accent-ink); cursor: pointer;
-  }
-  button.send:disabled { opacity: .55; cursor: wait; }
-  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+:root{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#172033;background:#f3f6fb}
+*{box-sizing:border-box}body{margin:0}header{background:#102a43;color:#fff;padding:22px max(20px,calc((100% - 1100px)/2));display:flex;justify-content:space-between;align-items:center;gap:12px}
+header h1{font-size:20px;margin:0}main{max-width:1100px;margin:32px auto;padding:0 18px}.card{background:#fff;border:1px solid #e1e7ef;border-radius:16px;padding:24px;box-shadow:0 8px 24px #102a430a;margin-bottom:18px}
+h2{margin-top:0}label{display:block;font-weight:650;margin:12px 0 6px}input{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:9px;font:inherit}button{border:0;border-radius:9px;padding:11px 16px;background:#1769aa;color:#fff;font:inherit;font-weight:650;cursor:pointer;margin-top:14px}button.secondary{background:#e7eef6;color:#17324d}button.danger{background:#a52a2a}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.tabs button{margin:0}.muted{color:#637083;font-size:14px}.error{color:#a32222}.success{color:#146c43}.hidden{display:none!important}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}.metric{background:#f4f8fc;padding:16px;border-radius:12px}.metric strong{display:block;font-size:25px;margin-top:6px;overflow-wrap:anywhere}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.row input{flex:1;min-width:180px}table{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}th,td{text-align:left;padding:10px;border-bottom:1px solid #e6ebf1}th{background:#f4f7fb}.scroll{overflow:auto}.weather-result{font-size:18px;line-height:1.6;white-space:pre-wrap}
 </style>
 </head>
 <body>
-<main class="app">
-  <header>
-    <h1>PIN Code Weather Chat</h1>
-    <p>Type a 6-digit Indian PIN code to get the current temperature.</p>
-  </header>
+<header><h1>PIN Weather Chatbot</h1><div id="headerStatus" class="muted" style="color:#d7e6f4">Secure access</div></header>
+<main>
+<section id="loginScreen" class="card">
+<h2>Sign in</h2><p class="muted">Choose your account type, then enter your credentials.</p>
+<div class="tabs"><button id="userTab" type="button" class="secondary">Normal user</button><button id="adminTab" type="button" class="secondary">Administrator</button></div>
+<form id="loginForm">
+<label for="username">Username</label><input id="username" autocomplete="username" required maxlength="80">
+<label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required maxlength="256">
+<button id="loginButton" type="submit">Sign in as user</button>
+<p id="loginMessage" role="status"></p>
+</form>
+<p class="muted">Normal user accounts are created by the administrator. Do not share your password.</p>
+</section>
 
-  <div id="log" role="log" aria-live="polite">
-    <div class="msg bot">Hi! Send me a PIN code, for example 110001.</div>
-  </div>
+<section id="userScreen" class="hidden">
+<div class="card"><div class="row" style="justify-content:space-between"><div><h2>Weather lookup</h2><p class="muted">Signed in as <span id="userLabel"></span></p></div><button id="userLogout" class="secondary">Log out</button></div>
+<form id="weatherForm"><label for="pin">Indian PIN code</label><div class="row"><input id="pin" inputmode="numeric" pattern="[1-9][0-9]{5}" maxlength="6" placeholder="e.g. 122001" required><button type="submit" style="margin-top:0">Check weather</button></div></form>
+<p id="weatherMessage" role="status"></p><div id="weatherResult" class="weather-result"></div>
+</div></section>
 
-  <div class="tokens">
-    <span id="last">Last reply: 0 tokens</span>
-    <span>
-      <span id="total">Total used here: 0 tokens</span>
-      · <button type="button" id="reset">reset</button>
-    </span>
-  </div>
-
-  <form id="form">
-    <label for="msg" hidden>Your message</label>
-    <input type="text" id="msg" autocomplete="off" maxlength="300" placeholder="e.g. 560001" required>
-    <button class="send" id="send" type="submit">Send</button>
-  </form>
+<section id="adminScreen" class="hidden">
+<div class="card"><div class="row" style="justify-content:space-between"><div><h2>Admin dashboard</h2><p class="muted">Signed in as <span id="adminLabel"></span></p></div><button id="adminLogout" class="secondary">Log out</button></div>
+<div id="analyticsMessage" role="status"></div><div id="metrics" class="grid"></div>
+<h3>Requests by day</h3><div class="scroll" id="dailyTable"></div>
+<h3>Top countries</h3><div class="scroll" id="countryTable"></div>
+<h3>Most queried PIN codes</h3><div class="scroll" id="pinTable"></div>
+<h3>Recent requests</h3><div class="scroll" id="recentTable"></div>
+</div>
+<div class="card"><h2>Create a normal user</h2><p class="muted">Create a unique username and a strong password of at least 12 characters. Share credentials securely.</p>
+<form id="createUserForm"><label for="newUsername">Username</label><input id="newUsername" minlength="3" maxlength="32" pattern="[A-Za-z0-9._-]+" required placeholder="e.g. user01">
+<label for="newPassword">Password</label><input id="newPassword" type="password" minlength="12" maxlength="256" required>
+<button type="submit">Create user</button><p id="createUserMessage" role="status"></p></form>
+</div>
+<div class="card"><h2>User accounts</h2><button id="refreshUsers" class="secondary">Refresh users</button><div class="scroll" id="usersTable"></div></div>
+</section>
 </main>
-
 <script>
-  // STEP: replace this with your own Worker address after you deploy it on Cloudflare.
-  const WORKER_URL = "https://sweet-term-a0a2.gaurav-kawatra-mba.workers.dev";
+const API = "https://sweet-term-a0a2.gauravkawatra-mba.workers.dev";
+let loginRole = "user";
+let token = sessionStorage.getItem("weatherToken") || "";
+let role = sessionStorage.getItem("weatherRole") || "";
+let username = sessionStorage.getItem("weatherUsername") || "";
 
-  const log = document.getElementById("log");
-  const form = document.getElementById("form");
-  const input = document.getElementById("msg");
-  const sendBtn = document.getElementById("send");
-  const lastEl = document.getElementById("last");
-  const totalEl = document.getElementById("total");
-
-  // Running total is kept in this browser only. Google's own dashboard shows the real account-wide usage.
-  let total = 0;
-  try { total = Number(localStorage.getItem("tokenTotal")) || 0; } catch (e) {}
-  showTotal();
-
-  function showTotal() {
-    totalEl.textContent = "Total used here: " + total.toLocaleString("en-IN") + " tokens";
-  }
-
-  function add(text, cls) {
-    const div = document.createElement("div");
-    div.className = "msg " + cls;
-    div.textContent = text; // textContent keeps any text safe from HTML injection
-    log.appendChild(div);
-    log.scrollTop = log.scrollHeight;
-    return div;
-  }
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const text = input.value.trim();
-    if (!text) return;
-    add(text, "me");
-    input.value = "";
-    sendBtn.disabled = true;
-    const waiting = add("Checking…", "bot");
-
-    try {
-      const res = await fetch(WORKER_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text }),
-      });
-      const data = await res.json();
-      waiting.remove();
-      if (!res.ok) throw new Error(data.error || "Something went wrong.");
-
-      add(data.reply, "bot");
-      const used = data.usage?.total || 0;
-      total += used;
-      try { localStorage.setItem("tokenTotal", String(total)); } catch (e) {}
-      lastEl.textContent = "Last reply: " + used + " tokens (" +
-        (data.usage?.prompt || 0) + " in, " + (data.usage?.output || 0) + " out)";
-      showTotal();
-    } catch (err) {
-      waiting.remove();
-      add(err.message, "err");
-    } finally {
-      sendBtn.disabled = false;
-      input.focus();
-    }
-  });
-
-  document.getElementById("reset").addEventListener("click", () => {
-    total = 0;
-    try { localStorage.removeItem("tokenTotal"); } catch (e) {}
-    lastEl.textContent = "Last reply: 0 tokens";
-    showTotal();
-  });
+const $ = id => document.getElementById(id);
+function show(id){["loginScreen","userScreen","adminScreen"].forEach(x=>$(x).classList.toggle("hidden",x!==id));}
+function setMessage(id,text,kind=""){const el=$(id);el.textContent=text;el.className=kind;}
+async function api(path, options={}) {
+  const headers={"Content-Type":"application/json",...(options.headers||{})};
+  if(token) headers.Authorization=`Bearer ${token}`;
+  const res=await fetch(API+path,{...options,headers});
+  let data={};try{data=await res.json()}catch{}
+  if(!res.ok) throw new Error(data.error||`Request failed (${res.status})`);
+  return data;
+}
+function setSession(data){
+  token=data.token;role=data.role;username=data.username;
+  sessionStorage.setItem("weatherToken",token);sessionStorage.setItem("weatherRole",role);sessionStorage.setItem("weatherUsername",username);
+  $("headerStatus").textContent=`Signed in: ${username}`;
+  if(role==="admin"){ $("adminLabel").textContent=username;show("adminScreen");loadAdmin();}
+  else{$("userLabel").textContent=username;show("userScreen");}
+}
+function clearSession(){
+  token="";role="";username="";
+  ["weatherToken","weatherRole","weatherUsername"].forEach(k=>sessionStorage.removeItem(k));
+  $("headerStatus").textContent="Secure access";show("loginScreen");$("password").value="";
+}
+$("userTab").onclick=()=>{loginRole="user";$("loginButton").textContent="Sign in as user";$("userTab").className="";$("adminTab").className="secondary";setMessage("loginMessage","");};
+$("adminTab").onclick=()=>{loginRole="admin";$("loginButton").textContent="Sign in as administrator";$("adminTab").className="";$("userTab").className="secondary";setMessage("loginMessage","");};
+$("loginForm").onsubmit=async e=>{
+  e.preventDefault();setMessage("loginMessage","Signing in…");
+  try{const data=await api(loginRole==="admin"?"/auth/admin/login":"/auth/user/login",{method:"POST",body:JSON.stringify({username:$("username").value.trim(),password:$("password").value})});setSession(data);$("password").value="";}
+  catch(err){setMessage("loginMessage",err.message,"error");}
+};
+async function logout(){try{await api("/auth/logout",{method:"POST",body:"{}"});}catch{}clearSession();}
+$("userLogout").onclick=logout;$("adminLogout").onclick=logout;
+$("weatherForm").onsubmit=async e=>{
+  e.preventDefault();setMessage("weatherMessage","Checking weather…");$("weatherResult").textContent="";
+  const pin=$("pin").value.trim();
+  if(!/^[1-9][0-9]{5}$/.test(pin)){setMessage("weatherMessage","Enter a valid six-digit Indian PIN code.","error");return;}
+  try{const data=await api("/chat",{method:"POST",body:JSON.stringify({message:`What is the current temperature for Indian PIN code ${pin}?`})});$("weatherResult").textContent=data.reply||"No response.";setMessage("weatherMessage",`Tokens used: ${data.usage?.total ?? "not reported"}`,"success");}
+  catch(err){setMessage("weatherMessage",err.message,"error");if(/log in|session/i.test(err.message))clearSession();}
+};
+function esc(value){return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function table(rows, columns){
+ if(!rows||!rows.length)return "<p class='muted'>No data yet.</p>";
+ return `<table><thead><tr>${columns.map(c=>`<th>${esc(c.label)}</th>`).join("")}</tr></thead><tbody>${rows.map(r=>`<tr>${columns.map(c=>`<td>${esc(r[c.key])}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+}
+async function loadAdmin(){
+ setMessage("analyticsMessage","Loading analytics…");
+ try{
+  const d=await api("/admin/analytics",{method:"GET"});
+  const t=d.totals||{};
+  const metrics=[["Total requests",t.total_requests??0],["Total Gemini tokens",t.total_tokens??0],["Average response time",`${t.avg_response_ms??0} ms`],["Errors",t.errors??0],["Total users",t.total_users??0],["Active users",t.active_users??0]];
+  $("metrics").innerHTML=metrics.map(([label,value])=>`<div class="metric"><span>${esc(label)}</span><strong>${esc(value)}</strong></div>`).join("");
+  $("dailyTable").innerHTML=table(d.daily,[{key:"day",label:"Date (UTC)"},{key:"requests",label:"Requests"},{key:"tokens",label:"Tokens"}]);
+  $("countryTable").innerHTML=table(d.countries,[{key:"country",label:"Country"},{key:"requests",label:"Requests"}]);
+  $("pinTable").innerHTML=table(d.pins,[{key:"pin_code",label:"PIN code"},{key:"requests",label:"Requests"}]);
+  $("recentTable").innerHTML=table(d.recent,[{key:"request_time",label:"Time (UTC)"},{key:"pin_code",label:"PIN"},{key:"country",label:"Country"},{key:"total_response_ms",label:"Total ms"},{key:"status_code",label:"Status"},{key:"total_tokens",label:"Tokens"}]);
+  setMessage("analyticsMessage","Analytics loaded.","success");
+  await loadUsers();
+ }catch(err){setMessage("analyticsMessage",err.message,"error");}
+}
+async function loadUsers(){
+ try{
+  const d=await api("/admin/users",{method:"GET"});
+  const rows=d.users||[];
+  if(!rows.length){$("usersTable").innerHTML="<p class='muted'>No users created yet.</p>";return;}
+  $("usersTable").innerHTML=`<table><thead><tr><th>Username</th><th>Status</th><th>Created (UTC)</th><th>Action</th></tr></thead><tbody>${rows.map(u=>`<tr><td>${esc(u.username)}</td><td>${u.is_active===1?"Active":"Disabled"}</td><td>${esc(u.created_at)}</td><td><button class="${u.is_active===1?"danger":"secondary"}" data-id="${u.id}" data-active="${u.is_active===1?0:1}">${u.is_active===1?"Disable":"Enable"}</button></td></tr>`).join("")}</tbody></table>`;
+  $("usersTable").querySelectorAll("button[data-id]").forEach(b=>b.onclick=async()=>{try{await api("/admin/users/status",{method:"POST",body:JSON.stringify({id:Number(b.dataset.id),is_active:Number(b.dataset.active)})});await loadUsers();}catch(err){alert(err.message);}});
+ }catch(err){$("usersTable").textContent=err.message;}
+}
+$("createUserForm").onsubmit=async e=>{
+ e.preventDefault();setMessage("createUserMessage","Creating user…");
+ try{const d=await api("/admin/users",{method:"POST",body:JSON.stringify({username:$("newUsername").value.trim(),password:$("newPassword").value})});setMessage("createUserMessage",`Created ${d.username}. Share the password securely.`,"success");$("createUserForm").reset();await loadUsers();}
+ catch(err){setMessage("createUserMessage",err.message,"error");}
+};
+$("refreshUsers").onclick=loadUsers;
+(async()=>{
+ if(!token){show("loginScreen");return;}
+ try{const me=await api("/auth/me",{method:"GET"});setSession({token,role:me.role,username:me.username});}
+ catch{clearSession();}
+})();
 </script>
 </body>
 </html>
